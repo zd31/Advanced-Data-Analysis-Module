@@ -1,0 +1,81 @@
+---
+title: "01_Get Started"
+author: "Ziteng"
+output: html_document
+---
+
+# The Environment Impact Assessmemt (EIA)
+
+### Accessing and exploring data
+
+```{r access_data, warning=FALSE}
+library(remotes)
+
+#install_github("https://github.com/chrissuthy/statsecol.git")
+
+library(statsecol)
+
+data(nysted)
+```
+
+```{r head_data}
+# First few rows of data
+head(nysted)
+```
+
+```{r structure_data}
+# Structure of the data
+str(nysted)
+```
+
+```{r include=FALSE}
+library(tidyverse)
+```
+
+```{r}
+nysted %>%
+  # Create new col and calculate log count; ifelse to prevent negative inf value
+  mutate(log_count = ifelse(Count>0, log(Count), NA)) %>% 
+  # Plot distribution of birds in each phase
+  ggplot(aes(x=XPos/10000, y=YPos/10000)) +                    # x and y axis
+  geom_point(size=0.2, color="grey") +                         # size and color of the existing coordinates
+  geom_point(aes(size=log_count), alpha=0.2, color="purple") + # new points representing log count
+  scale_color_viridis_b() +                                    # color map
+  theme_bw() + facet_wrap(.~Phase) +                           # theme and separate by phase
+  coord_fixed(ratio=1) +                                       # force units in x/y equal
+  xlab("X coordinate (km)") + 
+  ylab("Y coordinate (km)") +
+  labs(size="Count (log)")
+```
+
+### Research questions
+
+__What explains variation in bird abundance and how?__
+
+_in space (X and Y)?_
+_by distance to the coast?_
+_by sea depth?_
+_by construction phase?_
+
+__Does abundance vary between construction phases?__
+
+__Is there evidence of redistribution across phases?__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
